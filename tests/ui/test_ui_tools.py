@@ -458,6 +458,25 @@ class TestMessageView:
             [message_fixture["id"]]
         )
 
+    @pytest.mark.parametrize("narrow_focus_pos, focus_msg",
+                              [(set(), 9999999), (9999999, 9999999)])
+    def test_main_view_issue1226(self, mocker, narrow_focus_pos, focus_msg):
+        mocker.patch(MESSAGEVIEW + ".read_message")
+        self.urwid.SimpleFocusListWalker.return_value = mocker.Mock()
+        mocker.patch(MESSAGEVIEW + ".set_focus")
+        msg_list = []
+        # making large message list
+        for i in range(10000000):
+            msg_list.append("MSG" + str(i))
+
+        mocker.patch(VIEWS + ".create_msg_box_list", return_value=msg_list)
+        self.model.get_focus_in_current_narrow.return_value = narrow_focus_pos
+
+        msg_view = MessageView(self.model, self.view)
+
+        assert msg_view.focus_msg == focus_msg
+
+
 
 class TestStreamsViewDivider:
     def test_init(self):
