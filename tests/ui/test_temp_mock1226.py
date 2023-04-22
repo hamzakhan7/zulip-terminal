@@ -44,9 +44,10 @@ class TestIssue():
         msg_view.body = mocker.Mock()
         return msg_view
     
-    @pytest.mark.parametrize("narrow_focus_pos, focus_msg", [(set(), 1), (0, 9999999)])
+    @pytest.mark.parametrize("narrow_focus_pos, focus_msg", [(set(), 9999999), (9999999, 9999999)])
     def test_main_view_issue1226(self, mocker, narrow_focus_pos, focus_msg):
-        print("focused message " + str(focus_msg))
+        print("focused message: " + str(focus_msg))
+        print("narrow focus pos: " + str(narrow_focus_pos))
 
         mocker.patch(MESSAGEVIEW + ".read_message")
         self.urwid.SimpleFocusListWalker.return_value = mocker.Mock()
@@ -61,4 +62,4 @@ class TestIssue():
 
         msg_view = MessageView(self.model, self.view)
 
-        # assert msg_view.focus_msg == focus_msg
+        assert msg_view.focus_msg == focus_msg
